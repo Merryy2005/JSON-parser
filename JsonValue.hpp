@@ -1,8 +1,11 @@
+#ifndef JSONVALUE
+#define JSONVALUE
+
+#include <iostream>
 #include <string>
 #include <vector>
 #include <map>
 #include <memory>
-#include <iostream>
 
 class JsonValueBase 
 {
@@ -93,3 +96,5 @@ class JsonObject : public JsonValueBase
             std::cout << "}";
         }
 };
+
+#endif //JSONVALUE
