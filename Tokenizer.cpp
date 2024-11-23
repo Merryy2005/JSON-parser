@@ -121,3 +121,57 @@ std::string Tokenizer::parseNumber()
     }
     return result;
 }
+
+std::vector<Tokenizer::Token> Tokenizer::tokenize() 
+{
+    std::vector<Token> tokens;
+    while (pos < json.size()) 
+    {
+        skipWhitespace();
+        char cur = peek();
+        if (cur == '{') tokens.push_back(Token(TokenType::CurlyOpen, std::string(1, next())));
+        else if (cur == '}') tokens.push_back(Token(TokenType::CurlyClose, std::string(1, next())));
+        else if (cur == '[') tokens.push_back(Token(TokenType::SquareOpen, std::string(1, next())));
+        else if (cur == ']') tokens.push_back(Token(TokenType::SquareClose, std::string(1, next())));
+        else if (cur == ':') tokens.push_back(Token(TokenType::Colon, std::string(1, next())));
+        else if (cur == ',') tokens.push_back(Token(TokenType::Comma, std::string(1, next())));
+        else if (cur == '"') tokens.push_back(Token(TokenType::String, parseString()));
+        else if (std::isdigit(cur) || cur == '-') tokens.push_back(Token(TokenType::Number, parseNumber()));
+        else if (json.compare(pos, 4, "true") == 0) 
+        {
+            tokens.push_back(Token(TokenType::Boolean, "true"));
+            pos += 4;
+        } 
+        else if (json.compare(pos, 5, "false") == 0) 
+        {
+            tokens.push_back(Token(TokenType::Boolean, "false"));
+            pos += 5;
+        } 
+        else if (json.compare(pos, 4, "null") == 0) 
+        {
+            tokens.push_back(Token(TokenType::Null, "null"));
+            pos += 4;
+        } 
+        else 
+        {
+            throw std::runtime_error("Unexpected character");
+        }
+    }
+    return tokens;
+}
+
+std::string readFile(const std::string& filePath) 
+{
+    std::ifstream file(filePath);
+    if (!file.is_open()) 
+    {
+        throw std::runtime_error("Could not open file");
+    }
+    std::string content;
+    char cur;
+    while (file.get(cur)) 
+    {
+        content += cur;
+    }
+    return content;
+}
