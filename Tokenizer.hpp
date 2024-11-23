@@ -17,25 +17,23 @@
 
 enum class TokenType {CurlyOpen, CurlyClose, SquareOpen, SquareClose, Colon, Comma, String, Number, Boolean, Null};
 
-class Tokenizer
+class Token
 {
-    private:
-        class Token
-        {
-            private:
-                TokenType type;
-                std::string value; //which token it is
-            public:
-                explicit Token(TokenType t , const std::string& v) : type(t) , value(v){}
-            friend class Tokenizer;
-        };
+    public:
+        TokenType type;
+        std::string value; //which token it is
+    public:
+        explicit Token(TokenType t , const std::string& v) : type(t) , value(v){}
+};
+
+class Tokenizer
+{        
     private:
         const std::string& json;
         std::size_t pos = 0;
     public:
         explicit Tokenizer(const std::string&);
         std::vector<Token> tokenize();
-        std::string readFile(const std::string&);
     private:
         void skipWhitespace();
         char next();
