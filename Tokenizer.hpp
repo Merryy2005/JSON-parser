@@ -35,6 +35,6 @@ class Tokenizer
         std::vector<Token> tokenize();
         std::string readFile(const std::string&);
     private:
-        void skipWhitespace()
+        void skipWhitespace();
 };
 #endif //TOKENIZER
