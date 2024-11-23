@@ -51,3 +51,70 @@ std::string Tokenizer::parseString() //parse a string literal in the JSON format
     }
     return result;
 }
+
+std::string Tokenizer::parseNumber() 
+{
+    std::string result;
+    bool decimal = false;
+    bool exponent = false;
+    bool exponentMinus = false;
+    while (pos < json.size()) 
+    {
+        char cur = peek();
+        if (std::isdigit(cur)) 
+        {
+            result += next();
+        }
+        else if (cur == '.') 
+        {
+            if (decimal || exponent) 
+            {
+                throw std::runtime_error("Invalid number format (multiple decimal points or invalid character in exponent)");
+            }
+            decimal = true;
+            result += next();
+        }
+        else if (cur == 'e' || cur == 'E') 
+        {
+            if (exponent) 
+            {
+                throw std::runtime_error("Invalid number format (multiple exponents)");
+            }
+            exponent = true;
+            result += next();
+            if (peek() == '-') 
+            {
+                result += next();
+                exponentMinus = true;
+            }
+        }
+        else if (cur == '-' && (result.empty() || result.back() == 'e' || result.back() == 'E')) 
+        {
+            result += next();
+        }
+        else {
+            break;  // End the number parsing when encountering an invalid character
+        }
+    }
+    if (result.back() == 'e' || result.back() == 'E') 
+    {
+        throw std::runtime_error("Invalid number format (incomplete exponent)");
+    }
+    if (result.back() == '-') 
+    {
+        throw std::runtime_error("Invalid number format (unfinished negative sign)");
+    }
+    if(result[0] == '0' && !decimal && result != "0") //0123 - invalid
+    {
+        throw std::runtime_error("Invalid number format (leading zeros not allowed)");
+    }
+    if(result[0] == '-' && result[1] == '0' && !decimal && result.size() != 2) //-0123 - invalid
+    {
+        throw std::runtime_error("Invalid number format (leading zeros not allowed)");
+    }
+    if (result[0] == '.' && result.size() > 1 && std::isdigit(result[1]))  // .123 -> 0.123
+    {
+        result = "0" + result; // Prefix with "0" for valid number format
+    }
+    return result;
+}
