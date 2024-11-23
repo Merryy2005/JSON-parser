@@ -92,6 +92,10 @@ std::string Tokenizer::parseNumber()
         {
             result += next();
         }
+        else if (cur == '+' && (result.empty() || result.back() == 'e' || result.back() == 'E')) 
+        {
+            result += next();
+        }
         else {
             break;  // End the number parsing when encountering an invalid character
         }
@@ -104,17 +108,29 @@ std::string Tokenizer::parseNumber()
     {
         throw std::runtime_error("Invalid number format (unfinished negative sign)");
     }
-    if(result[0] == '0' && !decimal && result != "0") //0123 - invalid
+    if(result.size() && result[0] == '0' && !decimal && result != "0") //0123 - invalid
     {
         throw std::runtime_error("Invalid number format (leading zeros not allowed)");
     }
-    if(result[0] == '-' && result[1] == '0' && !decimal && result.size() != 2) //-0123 - invalid
+    if(result.size() > 2 && result[0] == '-' && result[1] == '0' && !decimal) //-0123 - invalid
     {
         throw std::runtime_error("Invalid number format (leading zeros not allowed)");
     }
-    if (result[0] == '.' && result.size() > 1 && std::isdigit(result[1]))  // .123 -> 0.123
+    if(result.size() > 1 && result[0] == '0' && result[1] == '0') //00.123
+    {
+        throw std::runtime_error("Invalid number format (leading zeros not allowed)");
+    }
+    if(result.size() > 2 && result[0] == '-' && result[1] == '0' && result[2] == '0') // -00.123
+    {
+        throw std::runtime_error("Invalid number format (leading zeros not allowed)");
+    }
+    if (result.size() > 1 && result[0] == '.' && std::isdigit(result[1]))  // .123 -> 0.123
     {
         result = "0" + result; 
+    }
+    if(result.size() > 2 && result[0] == '-' && result[1] == '.' && std::isdigit(result[2])) // -.123 -> -0.123
+    {
+        result = "-0" + result.substr(1); 
     }
     return result;
 }
