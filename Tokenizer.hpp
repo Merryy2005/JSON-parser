@@ -36,5 +36,10 @@ class Tokenizer
         std::string readFile(const std::string&);
     private:
         void skipWhitespace();
+        char next();
+        char peek() const; //top 
+        std::string parseString();
+        std::string parseNumber();
 };
+
 #endif //TOKENIZER
