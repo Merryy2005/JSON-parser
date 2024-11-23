@@ -114,7 +114,7 @@ std::string Tokenizer::parseNumber()
     }
     if (result[0] == '.' && result.size() > 1 && std::isdigit(result[1]))  // .123 -> 0.123
     {
-        result = "0" + result; // Prefix with "0" for valid number format
+        result = "0" + result; 
     }
     return result;
 }
