@@ -25,6 +25,8 @@ class Tokenizer
             private:
                 TokenType type;
                 std::string value; //which token it is
+            public:
+                explicit Token(TokenType t , const std::string& v) : type(t) , value(v){}
             friend class Tokenizer;
         };
     private:
