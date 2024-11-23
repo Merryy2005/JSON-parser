@@ -4,7 +4,7 @@ Tokenizer::Tokenizer(const std::string& text):json(text){}
 
 void Tokenizer::skipWhitespace()
 {
-    while(pos < json.size() && json[pos] == ' ') ++pos;
+    while (pos < json.size() && std::isspace(json[pos])) ++pos;
 }
 
 char Tokenizer::next()
@@ -16,7 +16,7 @@ char Tokenizer::next()
 char Tokenizer::peek() const 
 {
     if (pos < json.size()) return json[pos];
-    throw std::runtime_error("Unexpected end of input");
+    std::runtime_error("Unexpected end of input");
 }
 
 std::string Tokenizer::parseString() //parse a string literal in the JSON format
@@ -122,7 +122,7 @@ std::string Tokenizer::parseNumber()
     return result;
 }
 
-std::vector<Tokenizer::Token> Tokenizer::tokenize() 
+std::vector<Token> Tokenizer::tokenize() 
 {
     std::vector<Token> tokens;
     while (pos < json.size()) 
@@ -136,7 +136,7 @@ std::vector<Tokenizer::Token> Tokenizer::tokenize()
         else if (cur == ':') tokens.push_back(Token(TokenType::Colon, std::string(1, next())));
         else if (cur == ',') tokens.push_back(Token(TokenType::Comma, std::string(1, next())));
         else if (cur == '"') tokens.push_back(Token(TokenType::String, parseString()));
-        else if (std::isdigit(cur) || cur == '-') tokens.push_back(Token(TokenType::Number, parseNumber()));
+        else if (std::isdigit(cur) || cur == '-' || cur == '.') tokens.push_back(Token(TokenType::Number, parseNumber()));
         else if (json.compare(pos, 4, "true") == 0) 
         {
             tokens.push_back(Token(TokenType::Boolean, "true"));
@@ -158,20 +158,4 @@ std::vector<Tokenizer::Token> Tokenizer::tokenize()
         }
     }
     return tokens;
-}
-
-std::string readFile(const std::string& filePath) 
-{
-    std::ifstream file(filePath);
-    if (!file.is_open()) 
-    {
-        throw std::runtime_error("Could not open file");
-    }
-    std::string content;
-    char cur;
-    while (file.get(cur)) 
-    {
-        content += cur;
-    }
-    return content;
 }
