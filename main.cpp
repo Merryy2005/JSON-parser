@@ -1,6 +1,5 @@
 #include <iostream>
-#include "JsonValue.hpp"
-#include "Tokenizer.hpp"
+#include "Parser.hpp"
 
 std::string readFile(const std::string& filePath) 
 {
@@ -23,16 +22,15 @@ int main()
     try 
     {
         std::string jsonContent = readFile("Alice.json"); 
-        Tokenizer tokenizer(jsonContent);
-        std::vector<Token> tokens = tokenizer.tokenize();
-        for (const auto& token : tokens) 
-        {
-            std::cout << "Token Type: " << static_cast<int>(token.type) << ", Value: " << token.value << std::endl;
-        }
+        Parser parser(jsonContent);
+        std::shared_ptr<JsonValueBase> root = parser.parse();
+        root->print();
+        std::cout << std::endl;
     } 
     catch (const std::exception& e) 
     {
         std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
     }
     return 0;
 }
