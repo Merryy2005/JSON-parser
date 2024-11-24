@@ -15,6 +15,8 @@
 //Colon :
 //Comma ,
 
+// we use tokenizer to add new features and we can then modify how tokenization works without changing parser
+
 enum class TokenType {CurlyOpen, CurlyClose, SquareOpen, SquareClose, Colon, Comma, String, Number, Boolean, Null};
 
 class Token
