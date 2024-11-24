@@ -6,10 +6,7 @@ Parser::Parser(const std::string& json) : tokenizer(json), tokens(tokenizer.toke
 
 std::shared_ptr<JsonValueBase> Parser::parse() 
 {
-    if (!hasMoreTokens()) 
-    {
-        throw std::runtime_error("No tokens to parse");
-    }
+    if (!hasMoreTokens()) { throw std::runtime_error("No tokens to parse"); }
     return parseValue(); 
 }
 
@@ -18,20 +15,13 @@ std::shared_ptr<JsonValueBase> Parser::parseValue()
     const Token& token = currentToken();
     switch (token.type) 
     {
-        case TokenType::CurlyOpen:
-            return parseObject(); 
-        case TokenType::SquareOpen:
-            return parseArray();
-        case TokenType::String:
-            return parseString();
-        case TokenType::Number:
-            return parseNumber();
-        case TokenType::Boolean:
-            return parseBoolean(); 
-        case TokenType::Null:
-            return parseNull();
-        default:
-            throw std::runtime_error("Unexpected token type");
+        case TokenType::CurlyOpen: return parseObject(); 
+        case TokenType::SquareOpen: return parseArray();
+        case TokenType::String: return parseString();
+        case TokenType::Number: return parseNumber();
+        case TokenType::Boolean: return parseBoolean(); 
+        case TokenType::Null: return parseNull();
+        default: throw std::runtime_error("Unexpected token type");
     }
 }
 
@@ -41,23 +31,14 @@ std::shared_ptr<JsonObject> Parser::parseObject()
     auto obj = std::make_shared<JsonObject>();
     while (currentToken().type != TokenType::CurlyClose) 
     {
-        if (currentToken().type != TokenType::String) 
-        {
-            throw std::runtime_error("Expected a string key in object");
-        }
+        if (currentToken().type != TokenType::String) { throw std::runtime_error("Expected a string key in object"); }
         std::string key = currentToken().value;
         nextToken(); // Skip key
-        if (currentToken().type != TokenType::Colon) 
-        {
-            throw std::runtime_error("Expected ':' after key in object");
-        }
+        if (currentToken().type != TokenType::Colon) { throw std::runtime_error("Expected ':' after key in object"); }
         nextToken(); // ':'
         std::shared_ptr<JsonValueBase> value = parseValue(); // Directly parse value
         obj->add(key, value); // Add the parsed value to the object
-        if (currentToken().type == TokenType::Comma) 
-        {
-            nextToken(); // ',' (skip)
-        }
+        if (currentToken().type == TokenType::Comma) { nextToken(); } // ',' (skip)
     }
     nextToken(); // '}'
     return obj;
@@ -71,10 +52,7 @@ std::shared_ptr<JsonArray> Parser::parseArray()
     {
         std::shared_ptr<JsonValueBase> value = parseValue(); 
         arr->add(value); 
-        if (currentToken().type == TokenType::Comma) 
-        {
-            nextToken(); // ',' (skip)
-        }
+        if (currentToken().type == TokenType::Comma) { nextToken(); } // ',' (skip)
     }
     nextToken(); // ']'
     return arr;
@@ -109,23 +87,14 @@ std::shared_ptr<JsonNull> Parser::parseNull()
 
 Token Parser::currentToken() const 
 {
-    if (!hasMoreTokens()) 
-    {
-        throw std::runtime_error("No more tokens available");
-    }
+    if (!hasMoreTokens()) { throw std::runtime_error("No more tokens available"); }
     return tokens[currentIndex];
 }
 
 Token Parser::nextToken() 
 {
-    if (!hasMoreTokens()) 
-    {
-        throw std::runtime_error("No more tokens to advance");
-    }
+    if (!hasMoreTokens()) { throw std::runtime_error("No more tokens to advance"); }
     return tokens[currentIndex++];
 }
 
-bool Parser::hasMoreTokens() const 
-{
-    return currentIndex < tokens.size();
-}
+bool Parser::hasMoreTokens() const { return currentIndex < tokens.size(); }
