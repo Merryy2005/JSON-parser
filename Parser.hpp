@@ -1,30 +1,31 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include <memory>
-#include "JsonValue.hpp"
 #include "Tokenizer.hpp"
+#include "JsonValue.hpp"
+#include <memory>
 
-class Parser 
+class Parser
 {
     private:
         Tokenizer tokenizer;
         std::vector<Token> tokens;
-        size_t currentIndex;
+        std::size_t currentIndex;
     public:
         explicit Parser(const std::string& json);
         std::shared_ptr<JsonValueBase> parse();
     private:
-        void parseValue(std::shared_ptr<JsonValueBase>& value);
-        void parseObject(JsonObject& obj);
-        void parseArray(JsonArray& arr);
-        void parseString(JsonString& str);
-        void parseNumber(JsonNumber& num);
-        void parseBoolean(JsonBoolean& boolean);
-        void parseNull(JsonNull& null);
+        std::shared_ptr<JsonValueBase> parseValue(); 
+        std::shared_ptr<JsonObject> parseObject(); 
+        std::shared_ptr<JsonArray> parseArray(); 
+        std::shared_ptr<JsonString> parseString(); 
+        std::shared_ptr<JsonNumber> parseNumber(); 
+        std::shared_ptr<JsonBoolean> parseBoolean(); 
+        std::shared_ptr<JsonNull> parseNull(); 
+    private:
         Token currentToken() const;
         Token nextToken();
         bool hasMoreTokens() const;
 };
 
-#endif // PARSER_HPP
+#endif //PARSER_HPP
