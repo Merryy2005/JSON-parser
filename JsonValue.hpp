@@ -61,7 +61,7 @@ class JsonArray : public JsonValueBase
             {
                 std::cout << std::string(level + 2, ' ');
                 elements[i]->print(level + 2);
-                if (i < elements.size() - 1) std::cout << ",";
+                if (i < elements.size() - 1) { std::cout << ","; }
                 std::cout << "\n";
             }
             std::cout << std::string(level, ' ');
@@ -74,7 +74,7 @@ class JsonObject : public JsonValueBase
     private:
         std::vector<std::pair<std::string, std::shared_ptr<JsonValueBase>>> members;
     public:
-        void add(const std::string& key, const std::shared_ptr<JsonValueBase>& value) {members.emplace_back(key, value);}
+        void add(const std::string& key, const std::shared_ptr<JsonValueBase>& value) { members.emplace_back(key, value); }
         void print(int level = 0) const override 
         {
             std::cout << "{\n";
@@ -82,7 +82,7 @@ class JsonObject : public JsonValueBase
             {
                 std::cout << std::string(level + 2, ' ') << "\"" << it->first << "\": ";
                 it->second->print(level + 2);
-                if (it != std::prev(members.end())) std::cout << ",";
+                if (it != std::prev(members.end())) { std::cout << ","; }
                 std::cout << "\n";
             }
             std::cout << std::string(level, ' ');
