@@ -12,15 +12,13 @@ class JsonValueBase
     public:
         JsonValueBase() = default;
         virtual ~JsonValueBase() = default;
-        virtual std::string getType() const = 0;
-        virtual void print() const = 0;
+        virtual void print(int level = 0) const = 0;
 };
 
 class JsonNull : public JsonValueBase 
 {
     public:
-        std::string getType() const override { return "Null"; }
-        void print() const override { std::cout << "null"; }
+        void print(int level = 0) const override { std::cout << "null"; }
 };
 
 class JsonBoolean : public JsonValueBase 
@@ -29,9 +27,7 @@ class JsonBoolean : public JsonValueBase
         bool value;
     public:
         explicit JsonBoolean(bool val) : value(val) {}
-        bool getValue() const { return value; }
-        std::string getType() const override { return "Boolean"; }
-        void print() const override { std::cout << (value ? "true" : "false"); }
+        void print(int level = 0) const override { std::cout << (value ? "true" : "false"); }
 };
 
 class JsonNumber : public JsonValueBase 
@@ -40,9 +36,7 @@ class JsonNumber : public JsonValueBase
         double value;
     public:
         explicit JsonNumber(double val) : value(val) {}
-        double getValue() const { return value; }
-        std::string getType() const override { return "Number"; }
-        void print() const override { std::cout << value; }
+        void print(int level = 0) const override { std::cout << value; }
 };
 
 class JsonString : public JsonValueBase 
@@ -51,9 +45,7 @@ class JsonString : public JsonValueBase
         std::string value;
     public:
         explicit JsonString(const std::string& val) : value(val) {}
-        const std::string& getValue() const { return value; }
-        std::string getType() const override { return "String"; }
-        void print() const override { std::cout << "\"" << value << "\""; }
+        void print(int level = 0) const override { std::cout << "\"" << value << "\""; }
 };
 
 class JsonArray : public JsonValueBase 
@@ -62,16 +54,17 @@ class JsonArray : public JsonValueBase
         std::vector<std::shared_ptr<JsonValueBase>> elements;
     public:
         void add(const std::shared_ptr<JsonValueBase>& element) { elements.push_back(element); }
-        const std::vector<std::shared_ptr<JsonValueBase>>& getElements() const { return elements; }
-        std::string getType() const override { return "Array"; }
-        void print() const override 
+        void print(int level = 0) const override 
         {
-            std::cout << "[";
+            std::cout << "[\n";
             for (size_t i = 0; i < elements.size(); ++i) 
             {
-                elements[i]->print();
-                if (i < elements.size() - 1) std::cout << ", ";
+                std::cout << std::string(level + 2, ' ');
+                elements[i]->print(level + 2);
+                if (i < elements.size() - 1) std::cout << ",";
+                std::cout << "\n";
             }
+            std::cout << std::string(level, ' ');
             std::cout << "]";
         }
 };
@@ -79,20 +72,20 @@ class JsonArray : public JsonValueBase
 class JsonObject : public JsonValueBase 
 {
     private:
-        std::map<std::string, std::shared_ptr<JsonValueBase>> members;
+        std::vector<std::pair<std::string, std::shared_ptr<JsonValueBase>>> members;
     public:
-        void add(const std::string& key, const std::shared_ptr<JsonValueBase>& value) { members[key] = value; }
-        const std::map<std::string, std::shared_ptr<JsonValueBase>>& getMembers() const { return members; }
-        std::string getType() const override { return "Object"; }
-        void print() const override 
+        void add(const std::string& key, const std::shared_ptr<JsonValueBase>& value) {members.emplace_back(key, value);}
+        void print(int level = 0) const override 
         {
-            std::cout << "{";
+            std::cout << "{\n";
             for(auto it = members.begin(); it != members.end(); ++it) 
             {
-                std::cout << "\"" << it->first << "\": ";
-                it->second->print();
-                if (it != std::prev(members.end())) std::cout << ", ";
+                std::cout << std::string(level + 2, ' ') << "\"" << it->first << "\": ";
+                it->second->print(level + 2);
+                if (it != std::prev(members.end())) std::cout << ",";
+                std::cout << "\n";
             }
+            std::cout << std::string(level, ' ');
             std::cout << "}";
         }
 };
