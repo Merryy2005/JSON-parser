@@ -1,9 +1,45 @@
 {
-    "name": "Alice",
-    "age": 30,
-    "isStudent": false,
-    "address": {
-        "city": "Wonderland",
-        "postalCode": "12345"
-    }
+    "person": {
+        "name": "Alice",
+        "age": 30,
+        "isStudent": false,
+        "address": {
+            "city": "Wonderland",
+            "postalCode": "12345"
+        },
+        "hobbies": ["reading", "chess", "coding"],
+        "education": [
+            {
+                "degree": "Bachelor's",
+                "field": "Computer Science",
+                "yearGraduated": 2015
+            },
+            {
+                "degree": "Master's",
+                "field": "Artificial Intelligence",
+                "yearGraduated": 2018
+            }
+        ]
+    },
+    "contacts": [
+        {
+            "type": "email",
+            "value": "alice@example.com"
+        },
+        {
+            "type": "phone",
+            "value": "+1234567890"
+        }
+    ],
+    "isEmployed": true,
+    "skills": [
+        {
+            "name": "Programming",
+            "level": "Advanced"
+        },
+        {
+            "name": "Problem Solving",
+            "level": "Expert"
+        }
+    ]
 }
