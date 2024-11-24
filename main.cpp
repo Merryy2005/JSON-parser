@@ -4,16 +4,10 @@
 std::string readFile(const std::string& filePath) 
 {
     std::ifstream file(filePath);
-    if (!file.is_open()) 
-    {
-        throw std::runtime_error("Could not open file");
-    }
+    if (!file.is_open()) throw std::runtime_error("Could not open file");
     std::string content;
     char cur;
-    while (file.get(cur)) 
-    {
-        content += cur;
-    }
+    while (file.get(cur)) content += cur;
     return content;
 }
 
