@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <cctype>
 #include <vector>
+#include <unordered_map>
 
 //CurlyOpen {
 //CurlyClose }
@@ -32,7 +33,7 @@ class Tokenizer
 {        
     private:
         const std::string& json;
-        std::size_t pos = 0;
+        std::size_t pos;
     public:
         explicit Tokenizer(const std::string&);
         std::vector<Token> tokenize();
