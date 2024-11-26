@@ -13,7 +13,7 @@ char Tokenizer::next()
 char Tokenizer::peek() const 
 {
     if (pos < json.size()) { return json[pos]; }
-    std::runtime_error("Unexpected end of input");
+    throw std::runtime_error("Unexpected end of input");
 }
 
 std::string Tokenizer::parseString() //parse a string literal in the JSON format
